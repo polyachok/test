@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/itprojects.min.css">
+    <link rel="stylesheet" href="../css/itprojects-icons.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <ul id="custom-context-menu" class="context-menu">
+    </ul>
+    <div class="container">
+            <h5><span data-name="title"></span></h5>
+            <div class="divider"></div>
+            <div class="columns">
+                <div class="column col-5 col-mr-auto">
+                    <button class="btn mt-2" id="create" data-link="" data-base="" name="create" type="button">Создать</button>
+                    <button id="close" class="btn btn-error mt-2" style="margin-left: 10px;">Закрыть</button>
+                    <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="null" style="margin-left: 10px;">РПР</button>
+                    <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="1" style="margin-left: 10px;">ПР</button>
+                    <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="9" style="margin-left: 10px;">УДЛ</button>
+                    <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="10" style="margin-left: 10px;">СУДЛ</button>
+                </div>
+                <div class="column col-auto ">
+                    <form class="form-horizontal columns" id="">
+                        <div class="form-group input-group">
+                            <label class="form-label" for="">Поиск: </label>
+                            <input class="form-input" type="text" id="" oninput="find(this.value)" name="" placeholder="Поиск">
+                            <span id="bs8Mznmo" name="" class="btn btn-primary input-group-btn">Найти</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="tableContent" class="">
+                <div class="columns">
+                    <div class="column">
+                        <div class="scroll-table" id="" style="height: calc((100vh - 100% - 130px) + 100%)">
+                            <table class="table table-striped table-hover scroll" cellspacing="0" id="journalTable">
+                                <thead>
+                                                                        
+                                </thead>                       
+                                <tbody>
+                                            
+                                </tbody>
+                            </table>                      
+                        </div> 
+                        <div class="form-group table-input-group d-hide">       
+                            <input class="form-input input-sm" type="text" id="jMogqSdf" style="border-radius: 0; border-right: none;" name="jMogqSdf" placeholder="Ввод с действием">
+                            <button class="btn btn-table-group btn-sm" id="resetSearch"><i class="icon icon-cross"></i></bu>
+                        </div>                           
+                        <div class="btn-group btn-group-block table-button-group" style="right: 8px;">
+                            <button class="btn btn-sm btn-table-group" id="PageUp"><i
+                                    class="icon icon-upload"></i></button>
+                            <button class="btn btn-sm btn-table-group" id="Up"><i
+                                    class="icon icon-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-table-group" id="Down"><i
+                                    class="icon icon-arrow-down"></i></button>
+                            <button class="btn btn-sm btn-table-group" id="PageDown"><i
+                                    class="icon icon-download"></i></button>
+                        </div>                             
+                    </div>              
+                </div>   
+            </div>   
+    </div>           
+                      
+    <dialog id="deleteDialog">
+      <p>Вы действительно хотите удалить запись?</p>
+      <button class="btn btn-error float-right" style="margin-left: 10px;" id="closeDeleteDialog">Отмена</button>
+      <button class="btn btn-success float-right" id="confirmDeleteDialog">Удалить</button>
+    </dialog>
+    <dialog id="deleteMarkDialog">
+        <br>Данный елемент не возможно удалить так как он используется в других документах!</br> 
+        Пометить элемент на удаление?</p>
+        <button class="btn btn-error float-right" style="margin-left: 10px;" id="closeMarkDeleteDialog">Отмена</button>
+        <button class="btn btn-success float-right" id="confirmMarkDeleteDialog">Пометить</button>
+      </dialog>    
+</body>
+<script src="index.js"></script>
+</html>
