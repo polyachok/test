@@ -16,6 +16,7 @@ login().then(result => {
     }
     journal();
     
+    
 })
 
 async function sendRequest(data) {
