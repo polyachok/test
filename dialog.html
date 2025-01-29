@@ -1,0 +1,12 @@
+<dialog id="dialog1">
+    <p>Вы действительно хотите удалить запись?</p>
+    <button class="btn btn-error float-right" style="margin-left: 10px;" onclick="closeDialog('dialog1')">Отмена</button>
+    <button class="btn btn-success float-right" id="confirmDeleteDialog">Удалить</button>
+</dialog>
+
+<dialog id="dialog2">
+    <br>Данный елемент не возможно удалить так как он используется в других документах!</br> 
+    Пометить элемент на удаление?</p>
+    <button class="btn btn-error float-right" style="margin-left: 10px;" onclick="closeDialog('dialog2')">Отмена</button>
+    <button class="btn btn-success float-right" id="confirmMarkDeleteDialog">Пометить</button>
+</dialog>

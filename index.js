@@ -14,8 +14,7 @@ login().then(result => {
     if(result.response.token) {
         token = result.response.token;
     }
-    journal();
-    
+    journal();    
 })
 
 async function sendRequest(data) {
@@ -155,4 +154,33 @@ function createTableBody(requisite, type){
         })
     })
     
+}
+
+function openDialog(dialogId) {
+    fetch('dialog.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const dialog = doc.getElementById(dialogId);
+
+            if (dialog) {
+                const container = document.getElementById('dialog-container');
+                container.innerHTML = ''; // Clear previous dialogs
+                container.appendChild(dialog);
+                dialog.show();
+            } else {
+                console.error(`Dialog with ID ${dialogId} not found.`);
+            }
+        })
+        .catch(error => console.error('Error loading dialog:', error));
+}
+
+function closeDialog(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (dialog && dialog.open) {
+        dialog.close();
+    } else {
+        console.error(`Dialog with ID ${dialogId} not found or is already closed.`);
+    }
 }

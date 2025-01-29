@@ -16,8 +16,8 @@
             <div class="divider"></div>
             <div class="columns">
                 <div class="column col-5 col-mr-auto">
-                    <button class="btn mt-2" id="create" data-link="" data-base="" name="create" type="button">Создать</button>
-                    <button id="close" class="btn btn-error mt-2" style="margin-left: 10px;">Закрыть</button>
+                    <button class="btn mt-2" id="create" data-link="" data-base="" name="create" type="button" onclick="openDialog('dialog1')">Создать</button>
+                    <button id="close" class="btn btn-error mt-2" style="margin-left: 10px;" onclick="openDialog('dialog2')">Закрыть</button>
                     <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="null" style="margin-left: 10px;">РПР</button>
                     <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="1" style="margin-left: 10px;">ПР</button>
                     <button class="btn mt-2 d-none" data-type="btnFromStatus" data-status="9" style="margin-left: 10px;">УДЛ</button>
@@ -63,19 +63,8 @@
                     </div>              
                 </div>   
             </div>   
-    </div>           
-                      
-    <dialog id="deleteDialog">
-      <p>Вы действительно хотите удалить запись?</p>
-      <button class="btn btn-error float-right" style="margin-left: 10px;" id="closeDeleteDialog">Отмена</button>
-      <button class="btn btn-success float-right" id="confirmDeleteDialog">Удалить</button>
-    </dialog>
-    <dialog id="deleteMarkDialog">
-        <br>Данный елемент не возможно удалить так как он используется в других документах!</br> 
-        Пометить элемент на удаление?</p>
-        <button class="btn btn-error float-right" style="margin-left: 10px;" id="closeMarkDeleteDialog">Отмена</button>
-        <button class="btn btn-success float-right" id="confirmMarkDeleteDialog">Пометить</button>
-      </dialog>    
+    </div>          
+    <div id="dialog-container"></div>
 </body>
 <script src="index.js"></script>
 </html>
