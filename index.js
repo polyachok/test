@@ -73,12 +73,11 @@ function createRequest(object, what, where) {
 }
 
 async function journal(){
-    const result = await structure(`${type}.ПоступлениеМатериалов`, ['*'], {}); 
+    const result = await structure(`${type}.Документ`, ['*'], {}); 
     console.log(result.response.form);    
     journalRequisite = createTableHead(result.response.form);
     createTableBody(journalRequisite, type);
 }
-
 
 function createTableHead(form){ 
     let thead = document.querySelector('thead');
@@ -102,6 +101,10 @@ function createTableHead(form){
             }                 
             th.textContent = item.attribute.synonym;
             tr.appendChild(th);
+        }
+        if(item.attribute.isFilter){//фильтр по элементу
+            console.log(item);
+            addFilter(item);
         }        
     })
     let mdTh = document.createElement('th');
@@ -109,7 +112,6 @@ function createTableHead(form){
     tr.appendChild(mdTh); 
     thead.appendChild(tr); 
     object.requisite.push('MD'); 
-    console.log(object);
     return object;
 }
 
@@ -184,3 +186,90 @@ function closeDialog(dialogId) {
         console.error(`Dialog with ID ${dialogId} not found or is already closed.`);
     }
 }
+//отрисовка фильтра
+function addFilter(element){
+    const filterData = document.getElementById('filterData');
+    filterData.innerHTML = '';
+    switch (element.attribute.type) {
+        case 'string':
+            let inputString = `<div class="column col-4">
+                            <div class="form-group input-group">
+                                <label class="form-label">Наименование: </label>
+                                <input id="" name="" class="form-input " type="text" maxlength="255">
+                            </div>
+                        </div>`;
+            filterData.insertAdjacentHTML('beforeend', inputString);
+            break;
+        case 'number':
+            let inputNumber = `<div class="column col-4">
+                            <div class="form-group input-group">
+                                <label class="form-label">Наименование: </label>
+                                <input id="" name="" class="form-input " type="text" maxlength="255">
+                            </div>
+                        </div>`;
+            filterData.insertAdjacentHTML('beforeend', inputNumber);
+            break;
+        case 'reference':
+            let inputReference = `<div class="column col-4">
+                                    <div class="form-group input-group">
+                                        <label class="form-label" for="search-input">Материал: </label>
+                                        <div class="has-icon-right">
+                                            <input type="text" id="" data-type="searchInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
+                                            <i class="form-icon icon icon-caret"></i>
+                                        </div>
+                                        <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
+                                            <div data-value="option2">Option 2</div>
+                                            <div data-value="option3">Option 3</div>
+                                            <div data-value="option4">Option 4</div>
+                                            <div data-value="option5">Option 5</div>
+                                            <div class="add-button">+ Добавить</div>
+                                        </div>
+                                    </div>
+                                </div>`;
+            filterData.insertAdjacentHTML('beforeend', inputReference);                    
+            break;
+        default:
+            break;
+    }
+}
+
+//данные для фильтра с сервера
+function getFilterData(element, data){
+    journalRequisite.condition.push(element, data);
+    createTableBody(journalRequisite, type);
+}
+
+
+//Обработка инпута с выпадающим списком
+document.addEventListener('DropdownInput', function(){
+    const searchInputs = document.querySelectorAll('[data-type="searchInput"]');
+    if(searchInputs){
+        searchInputs.forEach(input => {
+            let dropdownContent = document.querySelector(`[data-id="${input.id}"]`);
+            input.addEventListener('focus', function(){            
+                dropdownContent.style.display = 'block';                       
+            });
+    
+            dropdownContent.addEventListener('click', function(e) {
+                if (e.target && e.target.nodeName === "DIV" && !e.target.classList.contains('add-button')) {
+                    input.value = e.target.textContent;
+                    dropdownContent.style.display = 'none';
+                } else if (e.target && e.target.classList.contains('add-button')) {
+                   let reference = input.dataset.reference.split('.');               
+                  // newWindow = createWindow();
+                   //newWindow.dataset.input = input.id;
+                   //createFrameSelectJournal(reference, newWindow);
+                   setWindow(frameId, reference, input.id,);
+                   dropdownContent.style.display = 'none';           
+                }
+            });
+    
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    dropdownContent.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+});
