@@ -72,9 +72,11 @@ function createRequest(object, what, where) {
     return request;
 }
 
+//обработка журнала
 async function journal(){
-    const result = await structure(`${type}.Документ`, ['*'], {}); 
-    console.log(result.response.form);    
+    const result = await structure(`${type}.ПоступлениеМатериалов`, ['*'], {}); 
+    console.log(result.response.form);   
+    filter(result.response.form);
     journalRequisite = createTableHead(result.response.form);
     createTableBody(journalRequisite, type);
 }
@@ -103,8 +105,7 @@ function createTableHead(form){
             tr.appendChild(th);
         }
         if(item.attribute.isFilter){//фильтр по элементу
-            console.log(item);
-            addFilter(item);
+           // addFilter(item);
         }        
     })
     let mdTh = document.createElement('th');
@@ -157,7 +158,9 @@ function createTableBody(requisite, type){
     })
     
 }
+//-------------------------------------------------------------
 
+//обработка диалогов
 function openDialog(dialogId) {
     fetch('dialog.html')
         .then(response => response.text())
@@ -186,51 +189,68 @@ function closeDialog(dialogId) {
         console.error(`Dialog with ID ${dialogId} not found or is already closed.`);
     }
 }
+//--------------------------------------------------------------
+
 //отрисовка фильтра
-function addFilter(element){
+function filter(data){
     const filterData = document.getElementById('filterData');
     filterData.innerHTML = '';
+    const filteredRequisites = data.requisite.filter(requisite => requisite.attribute.isFilter);
+    const rowCount = Math.ceil(filteredRequisites.length / 3);
+    console.log(rowCount);
+    for (let i = 0; i < rowCount; i++) {
+        let row = document.createElement('div');
+        row.classList.add('columns');
+        filteredRequisites.forEach(element => {
+            let input = addFilter(element);
+            row.insertAdjacentHTML('beforeend', input);
+        })
+        filterData.appendChild(row);
+    }      
+}
+
+function addFilter(element){
+    console.log(element);
+    let input;
     switch (element.attribute.type) {
         case 'string':
-            let inputString = `<div class="column col-4">
-                            <div class="form-group input-group">
-                                <label class="form-label">Наименование: </label>
-                                <input id="" name="" class="form-input " type="text" maxlength="255">
-                            </div>
-                        </div>`;
-            filterData.insertAdjacentHTML('beforeend', inputString);
+            input = `<div class="column col-4">
+                        <div class="form-group input-group">
+                            <label class="form-label">${element.attribute.name}: </label>
+                            <input id="" name="" class="form-input " type="text" maxlength="255">
+                        </div>
+                    </div>`;           
             break;
         case 'number':
-            let inputNumber = `<div class="column col-4">
+            input = `<div class="column col-4">
                             <div class="form-group input-group">
-                                <label class="form-label">Наименование: </label>
+                                <label class="form-label">${element.attribute.name}: </label>
                                 <input id="" name="" class="form-input " type="text" maxlength="255">
                             </div>
                         </div>`;
-            filterData.insertAdjacentHTML('beforeend', inputNumber);
             break;
         case 'reference':
-            let inputReference = `<div class="column col-4">
-                                    <div class="form-group input-group">
-                                        <label class="form-label" for="search-input">Материал: </label>
-                                        <div class="has-icon-right">
-                                            <input type="text" id="" data-type="searchInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
-                                            <i class="form-icon icon icon-caret"></i>
-                                        </div>
-                                        <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
-                                            <div data-value="option2">Option 2</div>
-                                            <div data-value="option3">Option 3</div>
-                                            <div data-value="option4">Option 4</div>
-                                            <div data-value="option5">Option 5</div>
-                                            <div class="add-button">+ Добавить</div>
-                                        </div>
-                                    </div>
-                                </div>`;
-            filterData.insertAdjacentHTML('beforeend', inputReference);                    
+            input = `<div class="column col-4">
+                        <div class="form-group input-group">
+                            <label class="form-label" for="search-input">${element.attribute.name}: </label>
+                            <div class="has-icon-right">
+                                <input type="text" id="" data-type="searchInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
+                                <i class="form-icon icon icon-caret"></i>
+                            </div>
+                            <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
+                                <div data-value="option2">Option 2</div>
+                                <div data-value="option3">Option 3</div>
+                                <div data-value="option4">Option 4</div>
+                                <div data-value="option5">Option 5</div>
+                                <div class="add-button">+ Добавить</div>
+                            </div>
+                        </div>
+                    </div>`;
             break;
         default:
             break;
     }
+    return input;
 }
 
 //данные для фильтра с сервера
@@ -238,7 +258,7 @@ function getFilterData(element, data){
     journalRequisite.condition.push(element, data);
     createTableBody(journalRequisite, type);
 }
-
+//--------------------------------------------------------------
 
 //Обработка инпута с выпадающим списком
 document.addEventListener('DropdownInput', function(){
@@ -270,6 +290,5 @@ document.addEventListener('DropdownInput', function(){
                 }
             });
         });
-    }
-    
+    }    
 });
