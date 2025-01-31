@@ -75,7 +75,6 @@ function createRequest(object, what, where) {
 //обработка журнала
 async function journal(){
     const result = await structure(`${type}.ПоступлениеМатериалов`, ['*'], {}); 
-    console.log(result.response.form);   
     filter(result.response.form);
     journalRequisite = createTableHead(result.response.form);
     createTableBody(journalRequisite, type);
@@ -193,31 +192,38 @@ function closeDialog(dialogId) {
 
 //отрисовка фильтра
 function filter(data){
+    console.log(data);
     const filterData = document.getElementById('filterData');
     filterData.innerHTML = '';
     const filteredRequisites = data.requisite.filter(requisite => requisite.attribute.isFilter);
     const rowCount = Math.ceil(filteredRequisites.length / 3);
-    console.log(rowCount);
     for (let i = 0; i < rowCount; i++) {
         let row = document.createElement('div');
         row.classList.add('columns');
-        filteredRequisites.forEach(element => {
+        for (let j = i; j < i + 3 && j < filteredRequisites.length; j++) {
+            let element = filteredRequisites[j];
             let input = addFilter(element);
             row.insertAdjacentHTML('beforeend', input);
-        })
+        }
         filterData.appendChild(row);
-    }      
+    }    
+    let rowBtn = `<div class="columns">
+                    <div class="column col-5">
+                        <button class="btn mt-2" onclick="getFilterData()">Сформировать</button>
+                    </div>
+                </div>`; 
+    filterData.insertAdjacentHTML('beforeend', rowBtn);
 }
 
+//формируем инпуты для фильтра
 function addFilter(element){
-    console.log(element);
     let input;
     switch (element.attribute.type) {
         case 'string':
             input = `<div class="column col-4">
                         <div class="form-group input-group">
                             <label class="form-label">${element.attribute.name}: </label>
-                            <input id="" name="" class="form-input " type="text" maxlength="255">
+                            <input class="form-input" data-filter="filterInput" data-element="${element.id}" type="text">
                         </div>
                     </div>`;           
             break;
@@ -225,7 +231,7 @@ function addFilter(element){
             input = `<div class="column col-4">
                             <div class="form-group input-group">
                                 <label class="form-label">${element.attribute.name}: </label>
-                                <input id="" name="" class="form-input " type="text" maxlength="255">
+                                <input class="form-input" data-filter="filterInput" data-element="${element.id}" type="text">
                             </div>
                         </div>`;
             break;
@@ -234,7 +240,7 @@ function addFilter(element){
                         <div class="form-group input-group">
                             <label class="form-label" for="search-input">${element.attribute.name}: </label>
                             <div class="has-icon-right">
-                                <input type="text" id="" data-type="searchInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
+                                <input type="text" data-type="searchInput" data-filter="filterInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
                                 <i class="form-icon icon icon-caret"></i>
                             </div>
                             <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
@@ -247,15 +253,29 @@ function addFilter(element){
                         </div>
                     </div>`;
             break;
+        case 'boolean':
+            input = `<div class="column col-4">
+                        <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" data-filter="filterInput" data-element="${element.id}">
+                            <i class="form-icon"></i> ${element.attribute.name}
+                        </label>
+                        </div>
+                    </div>`;
+            break;
         default:
             break;
     }
     return input;
 }
 
-//данные для фильтра с сервера
-function getFilterData(element, data){
-    journalRequisite.condition.push(element, data);
+//данные согласно фильтра с сервера
+function getFilterData(){
+    const filterInputs = document.querySelectorAll('[data-filter="filterInput"]');
+    filterInputs.forEach(input => {
+        console.log('element - ' + input.dataset.element + ' - ' + 'data - ' + input.value);
+        journalRequisite.condition.push({[input.dataset.element]: input.value});
+    })
     createTableBody(journalRequisite, type);
 }
 //--------------------------------------------------------------
