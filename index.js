@@ -242,14 +242,7 @@ function addFilter(element){
                             <div class="has-icon-right">
                                 <input type="text" data-type="searchInput" data-filter="filterInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
                                 <i class="form-icon icon icon-caret"></i>
-                            </div>
-                            <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
-                                <div data-value="option2">Option 2</div>
-                                <div data-value="option3">Option 3</div>
-                                <div data-value="option4">Option 4</div>
-                                <div data-value="option5">Option 5</div>
-                                <div class="add-button">+ Добавить</div>
-                            </div>
+                            </div>                            
                         </div>
                     </div>`;
             break;
