@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="codeium:type" content="codemirror5" />
+    <title>IT-Projects: Автоматизация</title>
+    <link rel="stylesheet" href="../css/itprojects.min.css">
+    <link rel="stylesheet" href="../css/itprojects-icons.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        td{
+            border-bottom: 1px solid #d9dfe5;
+        }
+        a:visited {
+            color: #3a903a;
+        }
+        a.active, a:active, a:focus, a:hover {
+            color: #297429;
+            text-decoration: underline;
+        }
+        a {
+            color: #3a903a;
+            outline: 0;
+            text-decoration: none;
+        }
+        .icon-edit::before {
+            border: .1rem solid currentColor;
+            height: 0.4em;
+            transform: translate(-45%, -56%) rotate(137deg);
+            width: 0.85em;
+        }
+
+       
+
+        dialog:focus {
+            outline: none;
+        }
+
+       
+        #createNewElement {
+            border: .05rem solid #dadee4;
+            width: 80%;
+            height: 84%;
+            max-width: 99%;
+            max-height: 98%;
+            padding: 28px;
+            border-radius: 10px;
+        }
+        
+
+    #deleteDialog::backdrop {
+            background-color: transparent;
+            backdrop-filter: blur(5px);
+    }
+/*Стиль для инпута под ссылку*/
+        .dropdown {
+                position: relative;
+                display: inline-block;
+                width: 100%;
+        }
+        
+        .dropdown-content div {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .dropdown-content div:hover {
+            background-color: #f1f1f1;
+        }
+        .add-button {
+            background-color: #e0e0e0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h5><span data-name="titleDialog"></span></h5>
+        <div class="divider"></div>
+        <div class="columns">
+            <div class="column col-4 col-mr-auto">
+                <button class="btn mt-2" id="createFromSelect" data-link="" data-base="" name="create" type="button">Создать</button>
+                <button id="closeSelectJournal" class="btn btn-error mt-2" style="margin-left: 10px;">Закрыть</button>
+            </div>
+            <div class="column col-auto ">
+                <form class="form-horizontal columns" id="">
+                    <div class="form-group input-group">
+                        <label class="form-label" for="">Поиск: </label>
+                        <input class="form-input" type="text" id="" name="" placeholder="Поиск">
+                        <span id="bs8Mznmo" name="" class="btn btn-primary input-group-btn">Найти</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="scroll-table" id="" style="height: calc((100vh - 100% - 95px) + 100%)">
+                    <table class="table table-striped table-hover scroll" cellspacing="0" id="selectTable">
+                        <thead data-id="theadSelect">
+                                                                
+                        </thead>                       
+                        <tbody data-id="tbodySelect">
+                                    
+                        </tbody>
+                    </table>                      
+                </div>                                              
+            </div>              
+        </div>     
+    </div> 
+        
+<script src="../js/main.js"></script>
+<script src="../js/select_journal.js"></script>
+<script src="../js/window.js"></script>
+
+</body>
+<script>  
+
+
+
+
+</script>
+
+</html>

@@ -8,6 +8,22 @@ let object = {
     condition: []
 };
 
+const generateRandomId = () => {
+    let id = '';
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    const microtime = Date.now() / 1000;
+    const timestamp = Math.floor(microtime * 1000000).toString(36);
+    id += timestamp;
+    
+    id += letters[Math.floor(Math.random() * letters.length)];
+    
+    for (let i = 1; i < 32; i++) {
+        id += characters[Math.floor(Math.random() * characters.length)];
+    }
+    return id;
+};
 
 login().then(result => {
     console.log(result);
@@ -74,7 +90,7 @@ function createRequest(object, what, where) {
 
 //обработка журнала
 async function journal(){
-    const result = await structure(`${type}.ПоступлениеМатериалов`, ['*'], {}); 
+    const result = await structure(`${type}.ПоступлениеТоваров`, ['*'], {}); 
     filter(result.response.form);
     journalRequisite = createTableHead(result.response.form);
     createTableBody(journalRequisite, type);
@@ -193,6 +209,7 @@ function closeDialog(dialogId) {
 //отрисовка фильтра
 function filter(data){
     console.log(data);
+    let reference = false;
     const filterData = document.getElementById('filterData');
     filterData.innerHTML = '';
     const filteredRequisites = data.requisite.filter(requisite => requisite.attribute.isFilter);
@@ -202,11 +219,19 @@ function filter(data){
         row.classList.add('columns');
         for (let j = i; j < i + 3 && j < filteredRequisites.length; j++) {
             let element = filteredRequisites[j];
+            if(element.attribute.type == 'reference'){
+                reference = true;
+            }
             let input = addFilter(element);
             row.insertAdjacentHTML('beforeend', input);
         }
         filterData.appendChild(row);
-    }    
+    }      
+    if(reference){
+        document.dispatchEvent(new Event('DropdownInput'));
+        reference = false;
+    }
+     
     let rowBtn = `<div class="columns">
                     <div class="column col-5">
                         <button class="btn mt-2" onclick="getFilterData()">Сформировать</button>
@@ -240,16 +265,10 @@ function addFilter(element){
                         <div class="form-group input-group">
                             <label class="form-label" for="search-input">${element.attribute.name}: </label>
                             <div class="has-icon-right">
-                                <input type="text" data-type="searchInput" data-filter="filterInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
+                                <input id="${element.id}" type="text" onfocus="dropdownOption(this)" data-type="searchInput" data-filter="filterInput" data-element="data" data-reference="Справочник.Материалы.Наименование" name="Материал" class="form-input" placeholder="Выберите элемент" style="width: -webkit-fill-available; background-color: white;" value="" readonly="">
                                 <i class="form-icon icon icon-caret"></i>
                             </div>
-                            <div data-id="" class="dropdown-content" style="display: none;"><div data-value="option1">Option 1</div>
-                                <div data-value="option2">Option 2</div>
-                                <div data-value="option3">Option 3</div>
-                                <div data-value="option4">Option 4</div>
-                                <div data-value="option5">Option 5</div>
-                                <div class="add-button">+ Добавить</div>
-                            </div>
+                            
                         </div>
                     </div>`;
             break;
@@ -281,34 +300,31 @@ function getFilterData(){
 //--------------------------------------------------------------
 
 //Обработка инпута с выпадающим списком
-document.addEventListener('DropdownInput', function(){
-    const searchInputs = document.querySelectorAll('[data-type="searchInput"]');
-    if(searchInputs){
-        searchInputs.forEach(input => {
-            let dropdownContent = document.querySelector(`[data-id="${input.id}"]`);
-            input.addEventListener('focus', function(){            
-                dropdownContent.style.display = 'block';                       
-            });
-    
-            dropdownContent.addEventListener('click', function(e) {
-                if (e.target && e.target.nodeName === "DIV" && !e.target.classList.contains('add-button')) {
-                    input.value = e.target.textContent;
-                    dropdownContent.style.display = 'none';
-                } else if (e.target && e.target.classList.contains('add-button')) {
-                   let reference = input.dataset.reference.split('.');               
-                  // newWindow = createWindow();
-                   //newWindow.dataset.input = input.id;
-                   //createFrameSelectJournal(reference, newWindow);
-                   setWindow(frameId, reference, input.id,);
-                   dropdownContent.style.display = 'none';           
-                }
-            });
-    
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.dropdown')) {
-                    dropdownContent.style.display = 'none';
-                }
-            });
-        });
-    }    
-});
+function dropdownOption(input){
+    setWindow(input.dataset.reference.split('.'), input.id);
+}
+
+function setWindow(reference, input = null){
+    let newWindow = createWindow();        
+    newWindow.dataset.input = input;
+    createFrameSelectJournal(reference, newWindow);
+   
+}
+
+function createFrameSelectJournal(reference, newWindow){
+    let iframe = document.createElement('iframe');
+    let frameID = generateRandomId();      
+    src = '/component/filter_journal.html';
+    iframe.src = src;
+    iframe.id = frameID;
+    iframe.setAttribute('style', 'width: 100%; height: calc(100vh - 391px);border: none; bottom: 0;');
+    newWindow.querySelector('.content').appendChild(iframe); 
+    newWindow.querySelector('#windowTitle').innerText = reference[1];
+    document.querySelector('.container').insertAdjacentElement('afterbegin', newWindow);
+
+    iframe.onload = function() {        
+        let message = {action: 'window', id: frameID, reference: reference, window: newWindow.id /*name: name, altName: altName, type: type*/};
+        iframe.contentWindow.postMessage(message, host);
+    }   
+}
+
